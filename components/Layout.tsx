@@ -128,28 +128,28 @@ export default function Layout({ children }: LayoutProps) {
                     </button>
 
                     {showNotifications && (
-                      <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                      <div className="absolute right-0 mt-2 w-80 md:w-80 max-w-[calc(100vw-2rem)] bg-white rounded-lg shadow-lg border border-gray-200 z-50">
                         <div className="p-4 border-b border-gray-200">
-                          <h3 className="text-sm font-medium text-gray-900">Notificaciones</h3>
+                          <h3 className="text-sm font-medium text-gray-900 whitespace-normal break-words">Notificaciones</h3>
                         </div>
                         <div className="max-h-64 overflow-y-auto">
                           {notifications.length === 0 ? (
-                            <div className="p-4 text-sm text-gray-500 text-center">
+                            <div className="p-4 text-sm text-gray-500 text-center whitespace-normal break-words">
                               No hay notificaciones nuevas
                             </div>
                           ) : (
                             notifications.map((notification) => (
                               <div key={notification.id} className="p-4 border-b border-gray-100 hover:bg-gray-50">
                                 <div className="flex justify-between items-start">
-                                  <div className="flex-1">
-                                    <p className="text-sm text-gray-900">{notification.mensaje}</p>
-                                    <p className="text-xs text-gray-500 mt-1">
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-sm text-gray-900 whitespace-normal break-words">{notification.mensaje}</p>
+                                    <p className="text-xs text-gray-500 mt-1 whitespace-nowrap">
                                       {new Date(notification.createdAt).toLocaleDateString()}
                                     </p>
                                   </div>
                                   <button
                                     onClick={() => markAsRead(notification.id)}
-                                    className="ml-2 text-xs text-blue-600 hover:text-blue-800"
+                                    className="ml-2 text-xs text-blue-600 hover:text-blue-800 whitespace-nowrap flex-shrink-0"
                                   >
                                     Marcar como leída
                                   </button>
@@ -162,7 +162,7 @@ export default function Layout({ children }: LayoutProps) {
                           <div className="p-3 border-t border-gray-200">
                             <Link
                               href="/perfil"
-                              className="text-sm text-blue-600 hover:text-blue-800"
+                              className="text-sm text-blue-600 hover:text-blue-800 whitespace-normal break-words block"
                               onClick={() => setShowNotifications(false)}
                             >
                               Ver todas en mi perfil
@@ -202,25 +202,25 @@ export default function Layout({ children }: LayoutProps) {
 
                     {/* Mobile Dropdown Menu */}
                     {showMobileMenu && (
-                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                      <div className="absolute right-2 mt-2 w-48 md:w-48 min-w-[160px] max-w-[calc(100vw-1rem)] bg-white rounded-lg shadow-lg border border-gray-200 z-50">
                         <div className="py-2">
                           <Link
                             href="/"
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors whitespace-normal break-words"
                             onClick={() => setShowMobileMenu(false)}
                           >
                             Inicio
                           </Link>
                           <Link
                             href="/perfil"
-                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors whitespace-normal break-words"
                             onClick={() => setShowMobileMenu(false)}
                           >
                             Mi perfil
                           </Link>
                           <button
                             onClick={handleLogout}
-                            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors whitespace-normal break-words"
                           >
                             Cerrar sesión
                           </button>
