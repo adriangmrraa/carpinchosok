@@ -410,19 +410,38 @@ export default function Home() {
                     </div>
 
                     {/* Stats */}
-                    <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
-                      <div className="flex items-center space-x-6">
-                        <div className="flex items-center space-x-2 text-green-600">
-                          <span className="text-lg">👍</span>
-                          <span className="font-semibold">{proposal.votosPositivos}</span>
+                    <div className="mb-6 pb-4 border-b border-gray-100">
+                      {/* Desktop Stats */}
+                      <div className="hidden md:flex items-center justify-between">
+                        <div className="flex items-center space-x-6">
+                          <div className="flex items-center space-x-2 text-green-600">
+                            <span className="text-lg">👍</span>
+                            <span className="font-semibold">{proposal.votosPositivos}</span>
+                          </div>
+                          <div className="flex items-center space-x-2 text-red-600">
+                            <span className="text-lg">👎</span>
+                            <span className="font-semibold">{proposal.votosNegativos}</span>
+                          </div>
+                          <div className="flex items-center space-x-2 text-orange-600">
+                            <span className="text-lg">🚩</span>
+                            <span className="font-semibold">{proposal.cantidadReportes}</span>
+                          </div>
                         </div>
-                        <div className="flex items-center space-x-2 text-red-600">
-                          <span className="text-lg">👎</span>
-                          <span className="font-semibold">{proposal.votosNegativos}</span>
+                      </div>
+
+                      {/* Mobile Stats - Centered like individual proposal page */}
+                      <div className="md:hidden grid grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
+                        <div className="text-center">
+                          <div className="text-xl font-bold text-green-600">{proposal.votosPositivos}</div>
+                          <div className="text-xs text-gray-600">👍 A favor</div>
                         </div>
-                        <div className="flex items-center space-x-2 text-orange-600">
-                          <span className="text-lg">🚩</span>
-                          <span className="font-semibold">{proposal.cantidadReportes}</span>
+                        <div className="text-center">
+                          <div className="text-xl font-bold text-red-600">{proposal.votosNegativos}</div>
+                          <div className="text-xs text-gray-600">👎 En contra</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-xl font-bold text-orange-600">{proposal.cantidadReportes}</div>
+                          <div className="text-xs text-gray-600">🚩 Reportes</div>
                         </div>
                       </div>
 
@@ -456,32 +475,34 @@ export default function Home() {
                         </Button>
                       </div>
 
-                      {/* Action Buttons - Mobile */}
-                      <div className="md:hidden w-full" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex flex-col space-y-2">
-                          <Button
-                            onClick={() => handleVote(proposal.id, 1)}
-                            variant="secondary"
-                            size="sm"
-                            className="flex items-center justify-center space-x-2 w-full hover:bg-green-50 hover:border-green-200 hover:text-green-700 transition-colors"
-                          >
-                            <span>👍</span>
-                            <span>A favor</span>
-                          </Button>
-                          <Button
-                            onClick={() => handleVote(proposal.id, -1)}
-                            variant="secondary"
-                            size="sm"
-                            className="flex items-center justify-center space-x-2 w-full hover:bg-red-50 hover:border-red-200 hover:text-red-700 transition-colors"
-                          >
-                            <span>👎</span>
-                            <span>En contra</span>
-                          </Button>
+                      {/* Action Buttons - Mobile - Horizontal layout like individual proposal page */}
+                      <div className="md:hidden" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center justify-between pt-6 border-t border-gray-200">
+                          <div className="flex space-x-3">
+                            <Button
+                              onClick={() => handleVote(proposal.id, 1)}
+                              variant="secondary"
+                              size="sm"
+                              className="flex items-center space-x-2 hover:bg-green-50 hover:border-green-200 hover:text-green-700 transition-colors"
+                            >
+                              <span>👍</span>
+                              <span>A favor</span>
+                            </Button>
+                            <Button
+                              onClick={() => handleVote(proposal.id, -1)}
+                              variant="secondary"
+                              size="sm"
+                              className="flex items-center space-x-2 hover:bg-red-50 hover:border-red-200 hover:text-red-700 transition-colors"
+                            >
+                              <span>👎</span>
+                              <span>En contra</span>
+                            </Button>
+                          </div>
                           <Button
                             onClick={() => handleReport(proposal.id)}
                             variant="secondary"
                             size="sm"
-                            className="w-full hover:bg-orange-50 hover:border-orange-200 hover:text-orange-700 transition-colors"
+                            className="hover:bg-orange-50 hover:border-orange-200 hover:text-orange-700 transition-colors"
                           >
                             Reportar
                           </Button>
