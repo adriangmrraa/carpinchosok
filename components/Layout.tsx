@@ -24,6 +24,7 @@ export default function Layout({ children }: LayoutProps) {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const router = useRouter();
   const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const notificationsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (user) {
@@ -47,6 +48,23 @@ export default function Layout({ children }: LayoutProps) {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [showMobileMenu]);
+
+  // Close notifications dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (notificationsRef.current && !notificationsRef.current.contains(event.target as Node)) {
+        setShowNotifications(false);
+      }
+    };
+
+    if (showNotifications) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showNotifications]);
 
   const fetchNotifications = async () => {
     try {
@@ -114,7 +132,7 @@ export default function Layout({ children }: LayoutProps) {
               {user ? (
                 <>
                   {/* Notifications */}
-                  <div className="relative">
+                  <div className="relative" ref={notificationsRef}>
                     <button
                       onClick={() => setShowNotifications(!showNotifications)}
                       className="relative p-2 text-gray-600 hover:text-gray-900 transition-colors"
@@ -128,47 +146,46 @@ export default function Layout({ children }: LayoutProps) {
                     </button>
 
                     {showNotifications && (
-                      <div className="absolute right-0 mt-2 w-80 md:w-80 max-w-[calc(100vw-2rem)] bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-                        <div className="p-4 border-b border-gray-200">
-                          <h3 className="text-sm font-medium text-gray-900 whitespace-normal break-words">Notificaciones</h3>
-                        </div>
-                        <div className="max-h-64 overflow-y-auto">
+                      <div className="absolute right-2 mt-2 w-48 md:w-80 min-w-[160px] max-w-[calc(100vw-1rem)] md:max-w-[calc(100vw-2rem)] bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                        <div className="py-2">
                           {notifications.length === 0 ? (
-                            <div className="p-4 text-sm text-gray-500 text-center whitespace-normal break-words">
+                            <div className="px-4 py-2 text-sm text-gray-500 text-center">
                               No hay notificaciones nuevas
                             </div>
                           ) : (
-                            notifications.map((notification) => (
-                              <div key={notification.id} className="p-4 border-b border-gray-100 hover:bg-gray-50">
-                                <div className="flex justify-between items-start">
-                                  <div className="flex-1 min-w-0">
-                                    <p className="text-sm text-gray-900 whitespace-normal break-words">{notification.mensaje}</p>
-                                    <p className="text-xs text-gray-500 mt-1 whitespace-nowrap">
-                                      {new Date(notification.createdAt).toLocaleDateString()}
-                                    </p>
+                            <>
+                              {notifications.slice(0, 3).map((notification) => (
+                                <div key={notification.id} className="px-4 py-2 border-b border-gray-100 hover:bg-gray-50 last:border-b-0">
+                                  <div className="flex justify-between items-start">
+                                    <div className="flex-1 min-w-0">
+                                      <p className="text-sm text-gray-900 truncate">{notification.mensaje}</p>
+                                      <p className="text-xs text-gray-500 mt-1">
+                                        {new Date(notification.createdAt).toLocaleDateString()}
+                                      </p>
+                                    </div>
+                                    <button
+                                      onClick={() => markAsRead(notification.id)}
+                                      className="ml-2 text-xs text-blue-600 hover:text-blue-800 flex-shrink-0"
+                                    >
+                                      ✓
+                                    </button>
                                   </div>
-                                  <button
-                                    onClick={() => markAsRead(notification.id)}
-                                    className="ml-2 text-xs text-blue-600 hover:text-blue-800 whitespace-nowrap flex-shrink-0"
-                                  >
-                                    Marcar como leída
-                                  </button>
                                 </div>
-                              </div>
-                            ))
+                              ))}
+                              {notifications.length > 3 && (
+                                <div className="px-4 py-2 border-t border-gray-200">
+                                  <Link
+                                    href="/perfil"
+                                    className="text-sm text-blue-600 hover:text-blue-800 block text-center"
+                                    onClick={() => setShowNotifications(false)}
+                                  >
+                                    Ver todas ({notifications.length})
+                                  </Link>
+                                </div>
+                              )}
+                            </>
                           )}
                         </div>
-                        {notifications.length > 0 && (
-                          <div className="p-3 border-t border-gray-200">
-                            <Link
-                              href="/perfil"
-                              className="text-sm text-blue-600 hover:text-blue-800 whitespace-normal break-words block"
-                              onClick={() => setShowNotifications(false)}
-                            >
-                              Ver todas en mi perfil
-                            </Link>
-                          </div>
-                        )}
                       </div>
                     )}
                   </div>
