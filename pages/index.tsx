@@ -422,8 +422,8 @@ export default function Home() {
                         </div>
                       </div>
 
-                      {/* Action Buttons */}
-                      <div className="flex items-center space-x-3">
+                      {/* Action Buttons - Desktop */}
+                      <div className="hidden md:flex items-center space-x-3">
                         <Button
                           onClick={() => handleVote(proposal.id, 1)}
                           variant="secondary"
@@ -450,6 +450,38 @@ export default function Home() {
                         >
                           Reportar
                         </Button>
+                      </div>
+
+                      {/* Action Buttons - Mobile */}
+                      <div className="md:hidden w-full">
+                        <div className="flex flex-col space-y-2">
+                          <Button
+                            onClick={() => handleVote(proposal.id, 1)}
+                            variant="secondary"
+                            size="sm"
+                            className="flex items-center justify-center space-x-2 w-full hover:bg-green-50 hover:border-green-200 hover:text-green-700 transition-colors"
+                          >
+                            <span>👍</span>
+                            <span>A favor</span>
+                          </Button>
+                          <Button
+                            onClick={() => handleVote(proposal.id, -1)}
+                            variant="secondary"
+                            size="sm"
+                            className="flex items-center justify-center space-x-2 w-full hover:bg-red-50 hover:border-red-200 hover:text-red-700 transition-colors"
+                          >
+                            <span>👎</span>
+                            <span>En contra</span>
+                          </Button>
+                          <Button
+                            onClick={() => handleReport(proposal.id)}
+                            variant="secondary"
+                            size="sm"
+                            className="w-full hover:bg-orange-50 hover:border-orange-200 hover:text-orange-700 transition-colors"
+                          >
+                            Reportar
+                          </Button>
+                        </div>
                       </div>
                     </div>
 
