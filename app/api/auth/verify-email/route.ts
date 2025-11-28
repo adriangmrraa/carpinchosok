@@ -1,4 +1,4 @@
-import { getUsuarioByDniOrEmail, updateUsuario } from '../../../../lib/nocodb';
+import { updateUsuario } from '../../../../lib/nocodb';
 
 export async function POST(request: Request) {
   try {
@@ -11,14 +11,34 @@ export async function POST(request: Request) {
       );
     }
 
-    // Find user by token
-    // Since NocoDB doesn't support direct query by token, we need to fetch all and filter (inefficient, but for demo)
-    // TODO: In production, use a separate table or better query
-    const users = await fetch(`${process.env.NOCODB_BASE_URL}/tables/${process.env.NOCODB_TABLE_ID_USUARIOS}/records`, {
-      headers: { 'Authorization': `Bearer ${process.env.NOCODB_API_TOKEN}` },
-    }).then(res => res.json()).then(data => data.list);
+    console.log('[verify-email] token recibido:', token);
 
-    const user = users.find((u: any) => u.verificationToken === token && new Date(u.verificationExpires) > new Date());
+    // Find user by token - using the same approach as other endpoints
+    const res = await fetch(`${process.env.NOCODB_BASE_URL}/api/v2/tables/${process.env.NOCODB_TABLE_ID_USUARIOS}/records`, {
+      headers: {
+        'xc-token': process.env.NOCODB_API_TOKEN!,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!res.ok) {
+      console.error('[verify-email] Error NocoDB status:', res.status);
+      return new Response(
+        JSON.stringify({ error: 'Error al consultar usuarios' }),
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const data = await res.json();
+    const users = Array.isArray(data.list) ? data.list : data;
+
+    const user = users.find((u: any) =>
+      u.verificationToken === token &&
+      u.verificationExpires &&
+      new Date(u.verificationExpires) > new Date()
+    );
+
+    console.log('[verify-email] usuario encontrado:', user && { id: user.id, email: user.email, emailVerificado: user.emailVerificado });
 
     if (!user) {
       return new Response(
@@ -27,12 +47,14 @@ export async function POST(request: Request) {
       );
     }
 
-    // Update user
+    // Update user using the existing helper (which uses API v1)
     await updateUsuario(user.id, {
       emailVerificado: true,
       verificationToken: undefined,
       verificationExpires: undefined,
     });
+
+    console.log('[verify-email] usuario actualizado exitosamente');
 
     return new Response(
       JSON.stringify({ message: 'Email verificado exitosamente' }),
