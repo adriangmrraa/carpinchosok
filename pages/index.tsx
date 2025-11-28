@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Layout from '../components/Layout';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
@@ -39,6 +40,7 @@ export default function Home() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newProposal, setNewProposal] = useState({ titulo: '', descripcion: '', localidad: 'Buenos Aires' });
   const [submitting, setSubmitting] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     fetchProposals();
@@ -369,12 +371,13 @@ export default function Home() {
               {proposals.map((proposal, index) => (
                 <Card
                   key={proposal.id}
-                  className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                  className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
                   style={{
                     animationDelay: `${index * 100}ms`,
                     animation: 'fadeInUp 0.6s ease-out forwards',
                     opacity: 0
                   }}
+                  onClick={() => router.push(`/propuestas/${proposal.id}`)}
                 >
                   <div className="p-6">
                     {/* Header */}
@@ -386,6 +389,7 @@ export default function Home() {
                         <Link
                           href={`/usuarios/${proposal.autorId}`}
                           className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
+                          onClick={(e) => e.stopPropagation()}
                         >
                           {proposal.autorNombre}
                         </Link>
@@ -423,7 +427,7 @@ export default function Home() {
                       </div>
 
                       {/* Action Buttons - Desktop */}
-                      <div className="hidden md:flex items-center space-x-3">
+                      <div className="hidden md:flex items-center space-x-3" onClick={(e) => e.stopPropagation()}>
                         <Button
                           onClick={() => handleVote(proposal.id, 1)}
                           variant="secondary"
@@ -453,7 +457,7 @@ export default function Home() {
                       </div>
 
                       {/* Action Buttons - Mobile */}
-                      <div className="md:hidden w-full">
+                      <div className="md:hidden w-full" onClick={(e) => e.stopPropagation()}>
                         <div className="flex flex-col space-y-2">
                           <Button
                             onClick={() => handleVote(proposal.id, 1)}
@@ -487,7 +491,7 @@ export default function Home() {
 
                     {/* Author Actions */}
                     {user && user.id === proposal.autorId && (
-                      <div className="flex justify-end space-x-2 pt-2">
+                      <div className="flex justify-end space-x-2 pt-2" onClick={(e) => e.stopPropagation()}>
                         <Button
                           variant="secondary"
                           size="sm"
