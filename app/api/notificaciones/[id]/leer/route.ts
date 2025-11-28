@@ -1,7 +1,7 @@
 import { updateNotificacionLeida } from '../../../../../lib/nocodb';
 import { verifyJWT } from '../../../../../lib/auth';
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     // Auth
     const cookie = request.headers.get('cookie');
@@ -14,7 +14,8 @@ export async function POST(request: Request, { params }: { params: { id: string 
       return Response.json({ error: 'Invalid token' }, { status: 401 });
     }
 
-    const notificacionId = parseInt(params.id);
+    const resolvedParams = await params;
+    const notificacionId = parseInt(resolvedParams.id);
 
     // Check ownership
     const notificaciones = await fetch(`${process.env.NOCODB_BASE_URL}/tables/${process.env.NOCODB_TABLE_ID_NOTIFICACIONES}/records`, {
