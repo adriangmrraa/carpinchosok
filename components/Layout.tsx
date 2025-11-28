@@ -78,9 +78,9 @@ export default function Layout({ children }: LayoutProps) {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setShowMobileMenu(false); // Close mobile menu
-    logout();
+    await logout();
     // Force a full page reload to ensure all state is cleared
     window.location.href = '/';
   };
