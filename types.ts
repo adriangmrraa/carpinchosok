@@ -1,7 +1,28 @@
-export interface Usuario {
+export interface PadronElectoral {
   id: number;
+  dni: string;
+  apellido: string;
   nombre: string;
+  localidad: string;
+}
+
+export interface UsuarioApp {
+  id: number;
+  dni: string;
+  padronId: number;
   email: string;
+  passwordHash: string;
+  emailVerificado: boolean;
+  perfilPrivado: boolean;
+  mostrarNombrePublico: boolean;
+  mostrarVotosPublicos: boolean;
+  nombreMostrado: string;
+  ultimaLat?: number;
+  ultimaLng?: number;
+  verificationToken?: string;
+  verificationExpires?: string;
+  createdAt: string;
+  updatedAt?: string;
 }
 
 export interface Propuesta {
@@ -9,12 +30,36 @@ export interface Propuesta {
   titulo: string;
   descripcion: string;
   autorId: number;
-  fechaCreacion: string; // ISO string format
+  localidad: string;
+  createdAt: string;
+  updatedAt?: string;
 }
 
 export interface Voto {
   id: number;
   usuarioId: number;
   propuestaId: number;
-  fecha: string; // ISO string format
+  valor: 1 | -1;
+  createdAt: string;
 }
+
+export interface Reporte {
+  id: number;
+  usuarioId: number;
+  propuestaId: number;
+  motivo?: string;
+  createdAt: string;
+}
+
+export interface Notificacion {
+  id: number;
+  usuarioId: number;
+  propuestaId?: number;
+  tipo: "voto_positivo" | "voto_negativo" | "reporte";
+  mensaje: string;
+  leida: boolean;
+  createdAt: string;
+}
+
+// Legacy interfaces for compatibility
+export interface Usuario extends UsuarioApp {}
