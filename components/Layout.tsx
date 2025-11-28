@@ -43,7 +43,8 @@ export default function Layout({ children }: LayoutProps) {
 
   const handleLogout = () => {
     logout();
-    router.push('/');
+    // Force a full page reload to ensure all state is cleared
+    window.location.href = '/';
   };
 
   const markAsRead = async (id: number) => {
