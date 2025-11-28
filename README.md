@@ -47,14 +47,51 @@ Una plataforma completa de participación ciudadana construida con Next.js, Type
 - **ESLint** para linting
 - **Build optimizado** para producción
 
-## 🚀 Instalación y Configuración
+## 🚀 Instalación y Despliegue
 
-### Prerrequisitos
+### Opción 1: Despliegue en Vercel (Recomendado) 🌐
+
+#### Despliegue Automático:
+1. **Conecta tu repositorio GitHub a Vercel:**
+   - Ve a [vercel.com](https://vercel.com)
+   - Importa el repositorio: `https://github.com/adriangmrraa/carpinchosok.git`
+
+2. **Configura las variables de entorno en Vercel:**
+   Ve a Project Settings > Environment Variables y agrega:
+   ```env
+   # NocoDB Configuration
+   NOCODB_BASE_URL=your_nocodb_url
+   NOCODB_API_TOKEN=your_api_token
+   NOCODB_BASE_SLUG=your_base_slug
+   NOCODB_TABLE_ID_PADRON=your_padron_table_id
+   NOCODB_TABLE_ID_USUARIOS=your_users_table_id
+   NOCODB_TABLE_ID_PROPUESTAS=your_proposals_table_id
+   NOCODB_TABLE_ID_VOTOS=your_votes_table_id
+   NOCODB_TABLE_ID_REPORTES=your_reports_table_id
+   NOCODB_TABLE_ID_NOTIFICACIONES=your_notifications_table_id
+
+   # Table Names for API v1
+   NOCODB_TABLE_NAME_PADRON=your_padron_table_name
+   NOCODB_TABLE_NAME_USUARIOS=your_users_table_name
+   NOCODB_TABLE_NAME_PROPUESTAS=your_proposals_table_name
+   NOCODB_TABLE_NAME_VOTOS=your_votes_table_name
+   NOCODB_TABLE_NAME_REPORTES=your_reports_table_name
+   NOCODB_TABLE_NAME_NOTIFICACIONES=your_notifications_table_name
+   ```
+
+3. **Deploy automático:**
+   - Vercel detectará automáticamente la configuración Next.js
+   - El build se ejecutará automáticamente
+   - Tu app estará live en `https://tu-proyecto.vercel.app`
+
+### Opción 2: Instalación Local 💻
+
+#### Prerrequisitos
 - Node.js 18+
 - npm o yarn
 - Base de datos NocoDB configurada
 
-### Instalación
+#### Instalación Local
 
 1. **Clona el repositorio:**
 ```bash
@@ -68,27 +105,7 @@ npm install
 ```
 
 3. **Configura variables de entorno:**
-Crea un archivo `.env.local` con:
-```env
-# NocoDB Configuration
-NOCODB_BASE_URL=your_nocodb_url
-NOCODB_API_TOKEN=your_api_token
-NOCODB_BASE_SLUG=your_base_slug
-NOCODB_TABLE_ID_PADRON=your_padron_table_id
-NOCODB_TABLE_ID_USUARIOS=your_users_table_id
-NOCODB_TABLE_ID_PROPUESTAS=your_proposals_table_id
-NOCODB_TABLE_ID_VOTOS=your_votes_table_id
-NOCODB_TABLE_ID_REPORTES=your_reports_table_id
-NOCODB_TABLE_ID_NOTIFICACIONES=your_notifications_table_id
-
-# Table Names for API v1
-NOCODB_TABLE_NAME_PADRON=your_padron_table_name
-NOCODB_TABLE_NAME_USUARIOS=your_users_table_name
-NOCODB_TABLE_NAME_PROPUESTAS=your_proposals_table_name
-NOCODB_TABLE_NAME_VOTOS=your_votes_table_name
-NOCODB_TABLE_NAME_REPORTES=your_reports_table_name
-NOCODB_TABLE_NAME_NOTIFICACIONES=your_notifications_table_name
-```
+Crea un archivo `.env.local` con las variables mostradas arriba.
 
 4. **Ejecuta la aplicación:**
 ```bash
