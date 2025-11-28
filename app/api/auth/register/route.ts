@@ -70,12 +70,34 @@ export async function POST(request: Request) {
 
     const usuario = await crearUsuarioApp(nuevoUsuario);
 
-    // Send verification email
-    sendVerificationEmail(validated.email, verificationToken);
+    // Call n8n webhook for email verification
+    const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+    const verificationUrl = `${baseUrl}/verificar-email?token=${verificationToken}`;
 
-    // Return public data
+    try {
+      await fetch('https://n8n-n8n.yn8wow.easypanel.host/webhook/verification', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: nuevoUsuario.email,
+          nombre: nuevoUsuario.nombreMostrado,
+          verificationUrl,
+          secret: process.env.N8N_VERIFICATION_SECRET,
+        }),
+      });
+    } catch (error) {
+      console.error('Error llamando al webhook de verificación en n8n', error);
+      // Don't fail registration if webhook fails
+    }
+
+    // Return public data with verification message
     const { passwordHash: _, ...publicUser } = usuario;
-    return Response.json(publicUser, { status: 201 });
+    return Response.json({
+      ...publicUser,
+      message: 'Te enviamos un email con un enlace para verificar tu cuenta. Revisá tu correo.'
+    }, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return Response.json({ error: 'Invalid input', details: error.issues }, { status: 400 });
