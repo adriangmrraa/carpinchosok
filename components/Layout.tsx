@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useUser } from './UserContext';
@@ -21,13 +21,32 @@ export default function Layout({ children }: LayoutProps) {
   const { user, loading, logout } = useUser();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const router = useRouter();
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (user) {
       fetchNotifications();
     }
   }, [user]);
+
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
+        setShowMobileMenu(false);
+      }
+    };
+
+    if (showMobileMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showMobileMenu]);
 
   const fetchNotifications = async () => {
     try {
@@ -42,6 +61,7 @@ export default function Layout({ children }: LayoutProps) {
   };
 
   const handleLogout = () => {
+    setShowMobileMenu(false); // Close mobile menu
     logout();
     // Force a full page reload to ensure all state is cleared
     window.location.href = '/';
@@ -77,7 +97,7 @@ export default function Layout({ children }: LayoutProps) {
               CARPINCHOS DECIDEN
             </Link>
 
-            {/* Navigation Links */}
+            {/* Navigation Links - Desktop */}
             <div className="hidden md:flex space-x-8">
               <Link href="/" className="text-gray-700 hover:text-blue-600 transition-colors">
                 Inicio
@@ -153,12 +173,12 @@ export default function Layout({ children }: LayoutProps) {
                     )}
                   </div>
 
-                  {/* User Menu */}
-                  <div className="flex items-center space-x-2">
+                  {/* User Menu - Desktop */}
+                  <div className="hidden md:flex items-center space-x-2">
                     <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
                       {user.nombreMostrado ? user.nombreMostrado.charAt(0).toUpperCase() : 'U'}
                     </div>
-                    <span className="text-sm text-gray-700 hidden sm:block">
+                    <span className="text-sm text-gray-700">
                       {user.nombreMostrado ? user.nombreMostrado.split(' ')[0] : 'Usuario'}
                     </span>
                     <button
@@ -167,6 +187,46 @@ export default function Layout({ children }: LayoutProps) {
                     >
                       Cerrar sesión
                     </button>
+                  </div>
+
+                  {/* Mobile Menu Button */}
+                  <div className="md:hidden relative" ref={mobileMenuRef}>
+                    <button
+                      onClick={() => setShowMobileMenu(!showMobileMenu)}
+                      className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                    >
+                      <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                        {user.nombreMostrado ? user.nombreMostrado.charAt(0).toUpperCase() : 'U'}
+                      </div>
+                    </button>
+
+                    {/* Mobile Dropdown Menu */}
+                    {showMobileMenu && (
+                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                        <div className="py-2">
+                          <Link
+                            href="/"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                            onClick={() => setShowMobileMenu(false)}
+                          >
+                            Inicio
+                          </Link>
+                          <Link
+                            href="/perfil"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                            onClick={() => setShowMobileMenu(false)}
+                          >
+                            Mi perfil
+                          </Link>
+                          <button
+                            onClick={handleLogout}
+                            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                          >
+                            Cerrar sesión
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </>
               ) : (

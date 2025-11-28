@@ -155,47 +155,94 @@ export default function ProposalCard({
 
           {/* Actions */}
           {showActions && (
-            <div className="flex items-center justify-between pt-4 border-t border-gray-200" onClick={(e) => e.stopPropagation()}>
-              <div className="flex space-x-3">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleVote(1);
-                  }}
-                  loading={voting}
-                  className="flex items-center space-x-1"
-                >
-                  <span>👍</span>
-                  <span>Votar a favor</span>
-                </Button>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleVote(-1);
-                  }}
-                  loading={voting}
-                  className="flex items-center space-x-1"
-                >
-                  <span>👎</span>
-                  <span>Votar en contra</span>
-                </Button>
+            <div className="pt-4 border-t border-gray-200" onClick={(e) => e.stopPropagation()}>
+              {/* Mobile Layout */}
+              <div className="block md:hidden space-y-3">
+                <div className="flex flex-col space-y-2">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleVote(1);
+                    }}
+                    loading={voting}
+                    className="flex items-center justify-center space-x-1 w-full"
+                  >
+                    <span>👍</span>
+                    <span>Votar a favor</span>
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleVote(-1);
+                    }}
+                    loading={voting}
+                    className="flex items-center justify-center space-x-1 w-full"
+                  >
+                    <span>👎</span>
+                    <span>Votar en contra</span>
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleReport();
+                    }}
+                    loading={reporting}
+                    className="w-full"
+                  >
+                    Reportar
+                  </Button>
+                </div>
               </div>
 
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleReport();
-                }}
-                loading={reporting}
-              >
-                Reportar
-              </Button>
+              {/* Desktop Layout */}
+              <div className="hidden md:flex items-center justify-between">
+                <div className="flex space-x-3">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleVote(1);
+                    }}
+                    loading={voting}
+                    className="flex items-center space-x-1"
+                  >
+                    <span>👍</span>
+                    <span>Votar a favor</span>
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleVote(-1);
+                    }}
+                    loading={voting}
+                    className="flex items-center space-x-1"
+                  >
+                    <span>👎</span>
+                    <span>Votar en contra</span>
+                  </Button>
+                </div>
+
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleReport();
+                  }}
+                  loading={reporting}
+                >
+                  Reportar
+                </Button>
+              </div>
             </div>
           )}
         </div>
