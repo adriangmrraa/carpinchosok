@@ -1,14 +1,15 @@
-import { z } from 'zod';
 import { getUsuarioByDniOrEmail, updateUsuario } from '../../../../lib/nocodb';
-
-const verifySchema = z.object({
-  token: z.string(),
-});
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { token } = verifySchema.parse(body);
+    const { token } = await request.json();
+
+    if (!token) {
+      return new Response(
+        JSON.stringify({ error: 'Token faltante' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
 
     // Find user by token
     // Since NocoDB doesn't support direct query by token, we need to fetch all and filter (inefficient, but for demo)
@@ -20,7 +21,10 @@ export async function POST(request: Request) {
     const user = users.find((u: any) => u.verificationToken === token && new Date(u.verificationExpires) > new Date());
 
     if (!user) {
-      return Response.json({ error: 'Token inválido o expirado' }, { status: 400 });
+      return new Response(
+        JSON.stringify({ error: 'Token inválido o expirado' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
     }
 
     // Update user
@@ -30,12 +34,15 @@ export async function POST(request: Request) {
       verificationExpires: undefined,
     });
 
-    return Response.json({ message: 'Email verificado exitosamente' });
+    return new Response(
+      JSON.stringify({ message: 'Email verificado exitosamente' }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    );
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return Response.json({ error: 'Invalid input', details: error.issues }, { status: 400 });
-    }
-    console.error('Error verifying email:', error);
-    return Response.json({ error: 'Failed to verify email' }, { status: 500 });
+    console.error('Error en verify-email:', error);
+    return new Response(
+      JSON.stringify({ error: 'Error interno al verificar email' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
   }
 }
